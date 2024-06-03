@@ -1,9 +1,12 @@
+import time
 import torch
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from torch.utils.data import DataLoader
 
 def load_data(batch_size=32):
+    start_time = time.time()
+    
     transform = transforms.Compose([
         transforms.RandomHorizontalFlip(),
         transforms.RandomCrop(32, padding=4),
@@ -16,5 +19,9 @@ def load_data(batch_size=32):
 
     testset = datasets.CIFAR10(root='./data/raw', train=False, download=True, transform=transform)
     testloader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=2)
+    
+    end_time = time.time()
+    processing_time = end_time - start_time
+    print(f"Data processing time: {processing_time:.2f} seconds")
 
-    return trainloader, testloader
+    return trainloader, testloader, processing_time

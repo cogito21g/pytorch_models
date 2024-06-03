@@ -1,3 +1,4 @@
+import time
 import torch
 import torch.optim as optim
 import torch.nn as nn
@@ -8,7 +9,7 @@ from torch.cuda.amp import GradScaler, autocast
 
 def train_model(model_fn, epochs=10, batch_size=16, learning_rate=0.0005, save_path='./results'):
     device = torch.device("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
-    trainloader, testloader = load_data(batch_size)
+    trainloader, testloader, data_processing_time = load_data(batch_size)
 
     model = model_fn().to(device)
     criterion = nn.CrossEntropyLoss()
@@ -16,6 +17,7 @@ def train_model(model_fn, epochs=10, batch_size=16, learning_rate=0.0005, save_p
     scaler = GradScaler()
 
     train_losses = []
+    start_time = time.time()
     for epoch in range(epochs):
         model.train()
         running_loss = 0.0
@@ -35,6 +37,10 @@ def train_model(model_fn, epochs=10, batch_size=16, learning_rate=0.0005, save_p
         epoch_loss = running_loss / len(trainloader)
         train_losses.append(epoch_loss)
         print(f"Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss}")
+    
+    end_time = time.time()
+    training_time = end_time - start_time
+    print(f"Training time: {training_time:.2f} seconds")
 
     # Save model weights
     if not os.path.exists(save_path):
@@ -55,4 +61,4 @@ def train_model(model_fn, epochs=10, batch_size=16, learning_rate=0.0005, save_p
     plt.show()
     print(f"Training loss plot saved to {loss_plot_path}")
 
-    return model
+    return model, training_time, data_processing_time
