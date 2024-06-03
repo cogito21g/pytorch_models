@@ -6,7 +6,7 @@ from src.data_loader import load_data
 import os
 
 def train_model(model_fn, epochs=10, batch_size=32, learning_rate=0.001, save_path='./results'):
-    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
     trainloader, testloader = load_data(batch_size)
 
     model = model_fn().to(device)

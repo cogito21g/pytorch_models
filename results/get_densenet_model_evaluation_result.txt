@@ -1,1 +1,1 @@
-Accuracy of the network on the test images: 79.19%
+Accuracy of the network on the test images: 78.83%
