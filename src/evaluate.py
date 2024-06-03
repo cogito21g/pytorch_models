@@ -2,7 +2,7 @@ import torch
 from src.data_loader import load_data
 import os
 
-def evaluate_model(model, model_fn, batch_size=32, save_path='./results'):
+def evaluate_model(model, model_fn, batch_size=16, save_path='./results'):
     device = torch.device("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
     _, testloader = load_data(batch_size)
 

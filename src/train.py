@@ -4,14 +4,16 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 from src.data_loader import load_data
 import os
+from torch.cuda.amp import GradScaler, autocast
 
-def train_model(model_fn, epochs=10, batch_size=32, learning_rate=0.001, save_path='./results'):
+def train_model(model_fn, epochs=10, batch_size=16, learning_rate=0.0005, save_path='./results'):
     device = torch.device("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
     trainloader, testloader = load_data(batch_size)
 
     model = model_fn().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    scaler = GradScaler()
 
     train_losses = []
     for epoch in range(epochs):
@@ -21,10 +23,12 @@ def train_model(model_fn, epochs=10, batch_size=32, learning_rate=0.001, save_pa
             inputs, labels = inputs.to(device), labels.to(device)
 
             optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
+            with autocast():
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
             running_loss += loss.item()
 
