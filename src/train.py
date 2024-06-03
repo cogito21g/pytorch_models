@@ -2,15 +2,14 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 import matplotlib.pyplot as plt
-from models.model import get_resnet_model
 from src.data_loader import load_data
 import os
 
-def train_model(epochs=10, batch_size=32, learning_rate=0.001, save_path='./results'):
+def train_model(model_fn, epochs=10, batch_size=32, learning_rate=0.001, save_path='./results'):
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     trainloader, testloader = load_data(batch_size)
 
-    model = get_resnet_model().to(device)
+    model = model_fn().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -36,7 +35,7 @@ def train_model(epochs=10, batch_size=32, learning_rate=0.001, save_path='./resu
     # Save model weights
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    model_path = os.path.join(save_path, 'resnet_model.pth')
+    model_path = os.path.join(save_path, f'{model_fn.__name__}_model.pth')
     torch.save(model.state_dict(), model_path)
     print(f"Model saved to {model_path}")
 
@@ -47,7 +46,7 @@ def train_model(epochs=10, batch_size=32, learning_rate=0.001, save_path='./resu
     plt.ylabel('Loss')
     plt.title('Training Loss over Epochs')
     plt.legend()
-    loss_plot_path = os.path.join(save_path, 'training_loss.png')
+    loss_plot_path = os.path.join(save_path, f'{model_fn.__name__}_training_loss.png')
     plt.savefig(loss_plot_path)
     plt.show()
     print(f"Training loss plot saved to {loss_plot_path}")

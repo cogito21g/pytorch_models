@@ -1,9 +1,8 @@
 import torch
 from src.data_loader import load_data
-from models.model import get_resnet_model
 import os
 
-def evaluate_model(model, batch_size=32, save_path='./results'):
+def evaluate_model(model, model_fn, batch_size=32, save_path='./results'):
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     _, testloader = load_data(batch_size)
 
@@ -27,7 +26,7 @@ def evaluate_model(model, batch_size=32, save_path='./results'):
     # Save the evaluation result
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    result_path = os.path.join(save_path, 'evaluation_result.txt')
+    result_path = os.path.join(save_path, f'{model_fn.__name__}_evaluation_result.txt')
     with open(result_path, 'w') as f:
         f.write(f"Accuracy of the network on the test images: {accuracy}%\n")
     print(f"Evaluation result saved to {result_path}")
