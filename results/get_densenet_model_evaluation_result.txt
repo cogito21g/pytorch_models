@@ -1,4 +1,4 @@
-Accuracy of the network on the test images: 79.7%
-Data processing time: 1.22 seconds
-Training time: 2458.06 seconds
-Evaluation time: 15.18 seconds
+Accuracy of the network on the test images: 79.73%
+Data processing time: 1.21 seconds
+Training time: 2439.54 seconds
+Evaluation time: 21.38 seconds
