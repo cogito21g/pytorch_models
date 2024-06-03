@@ -130,3 +130,6 @@ site/
 
 # MacOS stuff
 .DS_Store
+
+# data
+**/data/
