@@ -133,6 +133,3 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Contact
-
-If you have any questions, feel free to reach out to the project maintainer at [lesserpanda940105@gmail.com].
